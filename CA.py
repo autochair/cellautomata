@@ -395,8 +395,8 @@ if __name__ == '__main__':
     
     running = True
     while running == True:
-        clock.tick(3)
-        pygame.display.set_caption('CA: ' + str(clock.get_fps()))
+        #clock.tick(3)
+        #pygame.display.set_caption('CA: ' + str(clock.get_fps()))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -405,8 +405,10 @@ if __name__ == '__main__':
                 print(ob)
                 map_grid._toggle_obstacle(ob)
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_SPACE:
                     idle = False
+            if event.type == pygame.MOUSEMOTION:
+                pygame.display.set_caption('Cell: ' + str(tuple(math.floor(ti/tile_size) for ti in reversed(event.pos))))
 
         if idle:
             themap = map_grid.map
