@@ -135,12 +135,17 @@ class MapGrid():
 
                 #if(not self.isValid(grid, (x,y), nextCoord)):
                 if center != self.obstacle and center != self.target:
-                    neighborCoords = self.getPrioritizedNeighbors((x,y))
+                    neighborCoords = self.getPrioritizedNeighbors(grid,(x,y))
                     
+                    allInvalid = True
                     for neighborCoord in neighborCoords:
                         if(self.isValid(grid, (x,y), neighborCoord)):
                             grid[x][y] = self.pointAt((x,y), neighborCoord)
+                            allInvalid = False
                             break
+                    if allInvalid:  #if all are invalid, pick the best one for now
+                        grid[x][y] = self.pointAt((x,y), neighborCoords[0])
+
 
                     '''
                     try:
@@ -246,7 +251,8 @@ class MapGrid():
         nextDestX = nextDestCoord[0]
         nextDestY = nextDestCoord[1]
 
-        isObstacle = map[curX][curY] == self.obstacle
+        #isObstacle = map[curX][curY] == self.obstacle  
+        isObstacle = False   #obstacles are returned from getPrioritizedNeighbors
 
         isNextAtTarget = nextDirection == self.target
 
@@ -255,7 +261,7 @@ class MapGrid():
 
         isNextObstacle = nextDirection == self.obstacle
         
-        isNextPointingAtObstacle =  map[nextDestX][nextDestY] == self.obstacle
+        isNextPointingAtObstacle =  not isNextObstacle and map[nextDestX][nextDestY] == self.obstacle
 
         isPointingAtNeighbor = math.sqrt(math.pow(curX - nextDestX, 2) + math.pow(curY - nextDestY, 2)) < 1.42
 
@@ -263,17 +269,17 @@ class MapGrid():
 
         return not isNextObstacle and (isNextPointingAtObstacle or not isPointingAtNeighbor)
 
-    def getPrioritizedNeighbors(self, currentCoord):
+    def getPrioritizedNeighbors(self, grid, currentCoord):
         #first generate a list of all neighbor coordinates and distance from center 
         neighborTuples = []
         cx = self.center_location[0]
         cy = self.center_location[1]
 
-        for x in [-1,0,1]:
-            for y in [-1,0,1]:
-                neighborCoordx = currentCoord[0] + x
-                neighborCoordy = currentCoord[1] + y
-                distance = math.sqrt(math.pow(neighborCoordx - cx, 2) + math.pow(neighborCoordy - cy, 2))
+        for x, y in [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]:
+            neighborCoordx = currentCoord[0] + x
+            neighborCoordy = currentCoord[1] + y
+            distance = math.sqrt(math.pow(neighborCoordx - cx, 2) + math.pow(neighborCoordy - cy, 2))
+            if neighborCoordx >= 0 and neighborCoordy >= 0 and neighborCoordx < self.map_height and neighborCoordy < self.map_width and grid[neighborCoordx][neighborCoordy] != self.obstacle:
                 neighborTuples.append((neighborCoordx, neighborCoordy, distance))
 
         #sort by distance and make new list
@@ -282,6 +288,8 @@ class MapGrid():
         returnTuples = []
         for x,y,z in sortedTuples:
             returnTuples.append((x,y))
+        if not returnTuples:
+            returnTuples.append((0,0))  #put self at very end
         return returnTuples
 
     def pointAt(self, currentCoord, nextCoord):
