@@ -63,7 +63,7 @@ class MapGrid():
                     new_map_grid[x].append(self.target)
                 elif math.fabs(dx) == math.fabs(dy):
                     if dx > 0 and dy > 0:
-                       new_map_grid[x].append(self.southeast)
+                        new_map_grid[x].append(self.southeast)
                     elif dx > 0 and dy < 0:
                         new_map_grid[x].append(self.southwest)
                     elif dx < 0 and dy > 0:
@@ -119,7 +119,7 @@ class MapGrid():
         print(self.map[x][y])
         print(self.clean_map[x][y])
 
-    def _update_map(self, map, number_of_generations):
+    def _update_map(self, map, jumpLevel):
         
         grid = map
         next_grid = []
@@ -133,7 +133,8 @@ class MapGrid():
 
                 nextCoord = self.getNextCoord((x,y),center) #coordinate of next
 
-                if(not self.isValid(grid, (x,y), nextCoord)):
+                #if(not self.isValid(grid, (x,y), nextCoord)):
+                if center != self.obstacle and center != self.target:
                     neighborCoords = self.getPrioritizedNeighbors((x,y))
                     
                     for neighborCoord in neighborCoords:
@@ -184,7 +185,7 @@ class MapGrid():
                         '''
                 #next_column.append(next_cell)
         grid = next_grid
-                    
+                   
         return next_grid
 
     def getNextCoord(self,currentCoord, direction):
@@ -263,13 +264,13 @@ class MapGrid():
         return not isNextObstacle and (isNextPointingAtObstacle or not isPointingAtNeighbor)
 
     def getPrioritizedNeighbors(self, currentCoord):
-        #first generate a list of all neighbor coordinates and distance from center
+        #first generate a list of all neighbor coordinates and distance from center 
         neighborTuples = []
         cx = self.center_location[0]
         cy = self.center_location[1]
 
-        for x in range(-1,1):
-            for y in range(-1,1):
+        for x in [-1,0,1]:
+            for y in [-1,0,1]:
                 neighborCoordx = currentCoord[0] + x
                 neighborCoordy = currentCoord[1] + y
                 distance = math.sqrt(math.pow(neighborCoordx - cx, 2) + math.pow(neighborCoordy - cy, 2))
@@ -392,7 +393,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                ob = tuple(math.floor(ti/tile_size) for ti in pygame.mouse.get_pos())
+                ob = tuple(math.floor(ti/tile_size) for ti in event.pos)
                 print(ob)
                 map_grid._toggle_obstacle(ob)
             if event.type == pygame.KEYDOWN:
