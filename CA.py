@@ -133,8 +133,11 @@ class MapGrid():
 
                 nextCoord = self.getNextCoord((x,y),center) #coordinate of next
 
-                #if(not self.isValid(grid, (x,y), nextCoord)):
-                if center != self.obstacle and center != self.target:
+                if center != self.center and not self.isValid(grid, (x,y), nextCoord) and center != self.obstacle and center != self.target:
+                    grid[x][y] = self.center
+                
+                elif center != self.obstacle and center != self.target:
+
                     neighborCoords = self.getPrioritizedNeighbors(grid,(x,y))
                     
                     allInvalid = True
@@ -152,48 +155,6 @@ class MapGrid():
                         #grid[x][y] = self.pointAt((x,y), lastChoice)
                         grid[x][y] = self.center
 
-
-                    '''
-                    try:
-                        top_left = grid[x - 1][y - 1]
-                    except IndexError:
-                        top_left = self.obstacle
-                
-                    try:
-                        top = grid[x -1][y]
-                    except IndexError:
-                        top = self.obstacle
-                
-                    try:
-                        top_right = grid[x-1][y + 1]
-                    except IndexError:
-                        top_right = 0
-                    
-                    try:
-                        left = grid[x][y - 1]
-                    except IndexError:
-                        left = self.obstacle
-
-                    try:
-                        right = grid[x][y + 1]
-                    except IndexError:
-                        right = self.obstacle
-
-                    try:
-                        bottom_left = grid[x + 1][y - 1]
-                    except IndexError:
-                        bottom_left = self.obstacle
-                
-                    try:
-                        bottom = grid[x + 1][y]
-                    except IndexError:
-                        bottom = self.obstacle
-                
-                    try:
-                        bottom_right = grid[x + 1][y + 1]
-                    except IndexError:
-                        bottom_right = self.obstacle
-                        '''
                 #next_column.append(next_cell)
         grid = next_grid
                    
