@@ -37,8 +37,8 @@ class MapGrid():
     def _generate_center_only_grid(self, map_width, map_height, center_location):
 
         new_map_grid = []
-        cx = center_location[0] -1
-        cy = center_location[1] -1
+        cx = center_location[0] 
+        cy = center_location[1] 
 
         '''
         print(map_width)
@@ -138,13 +138,19 @@ class MapGrid():
                     neighborCoords = self.getPrioritizedNeighbors(grid,(x,y))
                     
                     allInvalid = True
+                    #lastChoice = (x,y)
                     for neighborCoord in neighborCoords:
                         if(self.isValid(grid, (x,y), neighborCoord)):
                             grid[x][y] = self.pointAt((x,y), neighborCoord)
                             allInvalid = False
                             break
                     if allInvalid:  #if all are invalid, pick the best one for now
-                        grid[x][y] = self.pointAt((x,y), neighborCoords[0])
+                        #for neighborCoord in neighborCoords:
+                        #    if neighborCoord != nextCoord:
+                        #        lastChoice = neighborCoord
+                        #        break
+                        #grid[x][y] = self.pointAt((x,y), lastChoice)
+                        grid[x][y] = self.center
 
 
                     '''
@@ -272,8 +278,8 @@ class MapGrid():
     def getPrioritizedNeighbors(self, grid, currentCoord):
         #first generate a list of all neighbor coordinates and distance from center 
         neighborTuples = []
-        cx = self.center_location[0]
-        cy = self.center_location[1]
+        cx = self.center_location[0] 
+        cy = self.center_location[1] 
 
         for x, y in [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]:
             neighborCoordx = currentCoord[0] + x
@@ -330,7 +336,7 @@ if __name__ == '__main__':
     map_height = 64
     tile_size = 25
 
-    center_location = (math.floor(map_width/2), math.floor(map_height/2))
+    center_location = (math.floor(map_width/2)-1, math.floor(map_height/2)-1)
     #center_location = (6,2)
     obstacle_list = []
 
@@ -392,11 +398,12 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
 
     idle = True
-    
+    i = 0
+    currentCell = (0,0)
     running = True
     while running == True:
         #clock.tick(3)
-        #pygame.display.set_caption('CA: ' + str(clock.get_fps()))
+        pygame.display.set_caption('Cell: ' + str(currentCell) + " Generations: " + str(i))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -405,16 +412,17 @@ if __name__ == '__main__':
                 print(ob)
                 map_grid._toggle_obstacle(ob)
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or pygame.K_RIGHT:
                     idle = False
             if event.type == pygame.MOUSEMOTION:
-                pygame.display.set_caption('Cell: ' + str(tuple(math.floor(ti/tile_size) for ti in reversed(event.pos))))
+                currentCell = tuple(math.floor(ti/tile_size) for ti in reversed(event.pos)) 
 
         if idle:
             themap = map_grid.map
         else:
             themap = map_grid._update_map(themap, 1)
             idle = True
+            i+=1
 
         for column_index, column in enumerate(themap):
             for tile_index, tile in enumerate(column):
