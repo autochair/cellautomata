@@ -5,6 +5,8 @@ from copy import deepcopy
 from operator import itemgetter
 #import logging
 
+from Map import Map
+
 class Options:
     """
 \t--help                   (to show this help and exit)
@@ -54,7 +56,10 @@ def main( argv ):
     obstacle_list = []
 
         
-    map_grid = MapGrid(map_width, map_height, center_location, obstacle_list)
+    cellMap = Map(width=map_width,
+                  height=map_height,
+                  center_location=center_location,
+                  obstacles=obstacle_list)
     #print map_grid.map
 
     pygame.init()

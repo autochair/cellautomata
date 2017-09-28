@@ -6,7 +6,7 @@ from operator import itemgetter
 #import logging
 
 
-class MapGrid():
+class Map():
 
     #define colors
     obstacle_color = (0,0,0)
@@ -43,37 +43,37 @@ class MapGrid():
 
    
 
-    def __init__(self, map_width, map_height, center_location, obstacle_list):
+    def __init__(self, width, height, center_location, obstacles):
 
         # set map values
-        self.map_width = map_width
-        self.map_height = map_height
+        self.width = width
+        self.height = height
         self.center_location = center_location
-        self.obstacle_list = obstacle_list
+        self.obstacles = obstacles
 
         # generate outside rooms
-        self.map = self._generate_map(self.map_width, self.map_height, self.center_location, self.obstacle_list)
-        #self.map = self._generate_empty_noise_grid(map_width, map_height)
+        self.map = self._generate_map(self.width, self.height, self.center_location, self.obstacles)
+        #self.map = self._generate_empty_noise_grid(width, height)
 
-    def _generate_center_only_grid(self, map_width, map_height, center_location):
+    def _generate_center_only_grid(self, width, height, center_location):
 
         new_map_grid = []
         cx = center_location[0] 
         cy = center_location[1] 
 
         '''
-        print(map_width)
-        print(map_height)
-        for x in range(map_height):
+        print(width)
+        print(height)
+        for x in range(height):
             new_map_grid.append([]) # add our columns to the array
-            for y in range(map_width):
+            for y in range(width):
                 new_map_grid[x].append(y)
                 print((x,y))
         print(new_map_grid)
         '''
-        for x in range(map_height):
+        for x in range(height):
             new_map_grid.append([]) # add our rows to the array
-            for y in range(map_width):
+            for y in range(width):
                 
                 dx = cx - x
                 dy = cy - y
@@ -108,22 +108,22 @@ class MapGrid():
 
         return new_map_grid
 
-    def _place_obstacles(self, map_grid, obstacle_list):
+    def _place_obstacles(self, map_grid, obstacles):
 
-        for ob in obstacle_list:
+        for ob in obstacles:
             map_grid[ob[0]][ob[1]] = self.obstacle
         return map_grid
 
     
-    def _generate_map(self, map_width, map_height, center_location, obstacle_list):
+    def _generate_map(self, width, height, center_location, obstacles):
         '''
         creates a grid
         '''
 
         #create a grid with center tile and all others pointing towards it
-        self.clean_map = self._generate_center_only_grid(map_width, map_height, center_location)
+        self.clean_map = self._generate_center_only_grid(width, height, center_location)
 
-        new_map_grid = self._place_obstacles(deepcopy(self.clean_map), obstacle_list)
+        new_map_grid = self._place_obstacles(deepcopy(self.clean_map), obstacles)
 
         return new_map_grid
 
@@ -264,7 +264,7 @@ class MapGrid():
             neighborCoordx = currentCoord[0] + x
             neighborCoordy = currentCoord[1] + y
             distance = math.sqrt(math.pow(neighborCoordx - cx, 2) + math.pow(neighborCoordy - cy, 2))
-            if neighborCoordx >= 0 and neighborCoordy >= 0 and neighborCoordx < self.map_height and neighborCoordy < self.map_width and grid[neighborCoordx][neighborCoordy] != self.obstacle:
+            if neighborCoordx >= 0 and neighborCoordy >= 0 and neighborCoordx < self.height and neighborCoordy < self.width and grid[neighborCoordx][neighborCoordy] != self.obstacle:
                 neighborTuples.append((neighborCoordx, neighborCoordy, distance))
 
         #sort by distance and make new list
