@@ -20,7 +20,7 @@ class JFA:
         (-1,0))
 
     def __init__(self, N):
-        # should calculate N from log2(sidelength) instead 
+        # should calculate N from log2(sidelength)-1 instead 
         self.N = n
         self.step = 0
 
