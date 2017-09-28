@@ -107,8 +107,8 @@ class MapGrid():
         return new_map_grid
 
     def _toggle_obstacle(self,ob):
-        x = ob[1]
-        y = ob[0]
+        x = int(ob[1])
+        y = int(ob[0])
         print((x,y))
         print(self.map[x][y])
         print(self.clean_map[x][y])
