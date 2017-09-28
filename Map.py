@@ -20,12 +20,6 @@ class Map():
     northwest_color = (255,0,255)
     southeast_color = (160,200,0)
     southwest_color = (0,125,255)
-    '''
-    northeast_color = (0,0,0)
-    northwest_color = (0,0,0)
-    southeast_color = (0,0,0)
-    southwest_color = (0,0,0)
-    '''
     center_color = (135,64,8)
 
     # define tile types and positions
@@ -48,11 +42,15 @@ class Map():
         # set map values
         self.width = width
         self.height = height
-        self.center_location = center_location
+        self.center_location = (math.floor(width/2)-1, math.floor(height/2)-1)
         self.obstacles = obstacles
 
         # generate outside rooms
-        self.map = self._generate_map(self.width, self.height, self.center_location, self.obstacles)
+        self.map = self._generate_map(
+            self.width,
+            self.height,
+            self.center_location,
+            self.obstacles)
         #self.map = self._generate_empty_noise_grid(width, height)
 
     def _generate_center_only_grid(self, width, height, center_location):

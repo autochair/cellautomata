@@ -51,14 +51,12 @@ def main( argv ):
     tile_size = options.cell_size
 
 
-    center_location = (math.floor(map_width/2)-1, math.floor(map_height/2)-1)
     #center_location = (6,2)
     obstacle_list = []
 
         
     cellMap = Map(width=map_width,
                   height=map_height,
-                  center_location=center_location,
                   obstacles=obstacle_list)
     #print map_grid.map
 
